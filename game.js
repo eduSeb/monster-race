@@ -230,6 +230,7 @@ const state = {
   playerMonster: 'A',
   maxNumber: 20,             // nouveau réglage
   isSpeaking: false,         // empêche le micro d'écouter le TTS
+  ignoreInputUntil: 0,       // système de cooldown anti-faux-positifs
   timerHandle: null,
   recognition: null,
   listening: false,
@@ -401,10 +402,10 @@ function levenshtein(a, b) {
  *    5+  lettres → 2 erreurs tolérées (katre→quatre, treze→treize…)
  */
 function fuzzyTol(word) {
-  // Stricte rigueur pour les petits chiffres (0-10)
-  const isSmallNumber = NUMBERS.indexOf(state.currentIndex) <= 10;
-  if (isSmallNumber || word.length <= 3) return 0; 
-  if (word.length <= 6) return 1;
+  // Stricte rigueur pour les chiffres 0-10 et les mots courts
+  const isSmallNumber = state.currentIndex <= 10;
+  if (isSmallNumber || word.length <= 4) return 0; 
+  if (word.length <= 7) return 1;
   return 2;
 }
 
@@ -475,8 +476,8 @@ function speakNumber(number) {
   utter.voice = pickFrVoice();
 
   const finished = () => {
-    // Petit délai pour éviter de capter la fin de l'écho
-    setTimeout(() => { state.isSpeaking = false; }, 400);
+    // Délai plus long pour s'assurer que l'écho du haut-parleur est fini
+    setTimeout(() => { state.isSpeaking = false; }, 800);
   };
 
   utter.onend = finished;
@@ -502,7 +503,8 @@ function checkAnswer(transcript) {
   const fullMatch = fuzzyMatch(normFull, wordList);
 
   // 2. Chaque mot individuel ≈ l'un des candidats
-  const spokenTokens = normFull.split(/[\s-]+/).filter(Boolean);
+  // On limite la recherche aux mots de plus de 1 lettre pour éviter les faux positifs (ex: "a")
+  const spokenTokens = normFull.split(/[\s-]+/).filter(t => t.length > 1);
   const tokenMatch   = spokenTokens.some(tok => fuzzyMatch(tok, wordList));
 
   const isCorrect = fullMatch || tokenMatch;
@@ -703,26 +705,86 @@ async function initSpeech() {
 
   // Chaque résultat reçu : vérifier la réponse
   recognition.onresult = (event) => {
-    // Si la machine est en train de parler, on ignore le micro pour éviter les boucles
-    if (state.isSpeaking) return;
+    // Si la machine parle ou si on vient juste de valider un chiffre, on ignore
+    if (state.isSpeaking || state.ignoreInputUntil > Date.now()) return;
 
     const idx = event.resultIndex;
     const result = event.results[idx];
 
-    // Vérifier la confiance globale de la transcription
-    if (result[0].confidence < 0.25) {
-      console.log('Confiance trop faible, ignoré.');
-      return;
+    // On parcourt les alternatives. Si l'une d'elles match avec une confiance suffisante, on valide.
+    for (let i = 0; i < result.length; i++) {
+        const alt = result[i];
+        const minConf = i === 0 ? 0.45 : 0.65; // L'alternative doit être très crédible
+
+        if (alt.confidence >= minConf) {
+            const transcript = alt.transcript.trim();
+            console.log(`[Speech] Alternative ${i} (conf:${alt.confidence.toFixed(2)}): "${transcript}"`);
+            
+            // On vérifie si ce transcript est correct pour le chiffre actuel
+            // Si oui, on traite et on arrête de boucler sur les alternatives
+            if (checkCorrectness(transcript)) {
+                handleCorrectAnswer();
+                return; 
+            }
+        }
     }
 
-    const transcripts = [];
-    for (let i = 0; i < result.length; i++) {
-      transcripts.push(result[i].transcript);
+    // Si aucune alternative n'est "correcte" mais que la meilleure a une bonne confiance, 
+    // alors c'est probablement une erreur de l'utilisateur (il a dit autre chose)
+    if (result[0].confidence > 0.5) {
+        handleWrongAnswer(result[0].transcript);
     }
-    const transcript = transcripts.join(' ');
-    console.log('Transcrit :', transcript);
-    checkAnswer(transcript);
   };
+}
+
+/** Fonction utilitaire pour vérifier si un texte correspond au chiffre attendu */
+function checkCorrectness(transcript) {
+    const expected = state.currentIndex;
+    const wordList = FR_WORDS[expected] || [];
+    const normFull = normalize(transcript);
+
+    const fullMatch = fuzzyMatch(normFull, wordList);
+    const spokenTokens = normFull.split(/[\s-]+/).filter(t => t.length > 1);
+    const tokenMatch = spokenTokens.some(tok => fuzzyMatch(tok, wordList));
+
+    return fullMatch || tokenMatch;
+}
+
+/** Traitement d'une bonne réponse */
+function handleCorrectAnswer() {
+    if (state.gameOver) return;
+    
+    // Cooldown pour éviter les triggers multiples sur le même souffle
+    state.ignoreInputUntil = Date.now() + 1200;
+
+    AudioEngine.success();
+    showFeedback('correct');
+    state.playerPos++;
+    updateMonsterPositions();
+    checkWin();
+
+    if (!state.gameOver) {
+      state.currentIndex++;
+      if (state.currentIndex < NUMBERS.length) {
+        setTimeout(() => highlightNumber(state.currentIndex), 400);
+      }
+    }
+}
+
+/** Traitement d'une mauvaise réponse */
+function handleWrongAnswer(transcript) {
+    if (state.gameOver || state.ignoreInputUntil > Date.now()) return;
+
+    console.log(`[Speech] Erreur détectée (transcrit: "${transcript}")`);
+    AudioEngine.error();
+    showFeedback('wrong');
+
+    // On ignore temporairement pour ne pas boucler sur l'erreur
+    state.ignoreInputUntil = Date.now() + 1500;
+
+    setTimeout(() => {
+      if (!state.gameOver) speakNumber(state.currentIndex);
+    }, 700);
 }
 
 function startListening() {
