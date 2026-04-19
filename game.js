@@ -402,11 +402,10 @@ function levenshtein(a, b) {
  *    5+  lettres → 2 erreurs tolérées (katre→quatre, treze→treize…)
  */
 function fuzzyTol(word) {
-  // Stricte rigueur pour les chiffres 0-10 et les mots courts
-  const isSmallNumber = state.currentIndex <= 10;
-  if (isSmallNumber || word.length <= 4) return 0; 
-  if (word.length <= 7) return 1;
-  return 2;
+  // Plus d'indulgence pour les jeunes enfants : au moins 1 erreur de distance autorisée
+  if (word.length <= 5) return 1; 
+  if (word.length <= 8) return 2;
+  return 3;
 }
 
 /**
@@ -714,7 +713,7 @@ async function initSpeech() {
     // On parcourt les alternatives. Si l'une d'elles match avec une confiance suffisante, on valide.
     for (let i = 0; i < result.length; i++) {
         const alt = result[i];
-        const minConf = i === 0 ? 0.45 : 0.65; // L'alternative doit être très crédible
+        const minConf = i === 0 ? 0.30 : 0.50; // Seuils abaissés pour les voix douces des enfants
 
         if (alt.confidence >= minConf) {
             const transcript = alt.transcript.trim();
@@ -729,9 +728,9 @@ async function initSpeech() {
         }
     }
 
-    // Si aucune alternative n'est "correcte" mais que la meilleure a une bonne confiance, 
-    // alors c'est probablement une erreur de l'utilisateur (il a dit autre chose)
-    if (result[0].confidence > 0.5) {
+    // Si aucune alternative n'est "correcte" mais que la meilleure a une confiance minimum, 
+    // on signale l'erreur (seuil abaissé à 0.4 pour capter les petites voix)
+    if (result[0].confidence > 0.4) {
         handleWrongAnswer(result[0].transcript);
     }
   };
