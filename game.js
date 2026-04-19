@@ -130,7 +130,7 @@ const FR_WORDS = {
   10: ['dix', 'dis', '10'],
   11: ['onze', 'onz', '11'],
   12: ['douze', 'douz', '12'],
-  13: ['treize', 'trez', 'treze', 'treiz', '13', 'teize'],
+  13: ['treize', 'trez', 'treze', 'treiz', 'teize', '13'],
   14: ['quatorze', 'katorz', 'catorze', '14'],
   15: ['quinze', 'kenz', 'kinze', '15'],
   16: ['seize', 'sez', 'seiz', 'seze', '16'],
@@ -138,8 +138,6 @@ const FR_WORDS = {
   18: ['dix-huit', 'dix huit', '18'],
   19: ['dix-neuf', 'dix neuf', '19'],
   20: ['vingt', 'vin', 'vint', '20'],
-  21: ['vingt-et-un', '21'],
-  // ... (on garde les nombres longs tels quels)
   21: ['vingt-et-un', 'vingt et un', '21'],
   22: ['vingt-deux', 'vingt deux', '22'],
   23: ['vingt-trois', 'vingt trois', '23'],
@@ -235,7 +233,14 @@ const state = {
   recognition: null,
   listening: false,
   gameOver: false,
+  isLearning: false,
 };
+
+let customWords = {};
+try {
+  customWords = JSON.parse(localStorage.getItem('monster_custom_words')) || {};
+} catch(e) {}
+
 
 // ──────────────────────────────────────────
 // RÉFÉRENCES DOM
@@ -710,6 +715,27 @@ async function initSpeech() {
     const idx = event.resultIndex;
     const result = event.results[idx];
 
+    // MODE APPRENTISSAGE : intercepter le prochain mot
+    if (state.isLearning) {
+      if (result[0].confidence > 0.0) {
+        const newWord = normalize(result[0].transcript);
+        const expected = state.currentIndex;
+        if (!customWords[expected]) customWords[expected] = [];
+        if (!customWords[expected].includes(newWord)) {
+           customWords[expected].push(newWord);
+           localStorage.setItem('monster_custom_words', JSON.stringify(customWords));
+        }
+        console.log(`[Learn] Mot appris : "${newWord}" pour le chiffre ${expected}`);
+        
+        state.isLearning = false;
+        $$('btn-mic').classList.remove('learning-mode');
+        
+        // Joue le succès et avance
+        handleCorrectAnswer();
+      }
+      return;
+    }
+
     // On parcourt les alternatives. Si l'une d'elles match avec une confiance suffisante, on valide.
     for (let i = 0; i < result.length; i++) {
         const alt = result[i];
@@ -739,7 +765,13 @@ async function initSpeech() {
 /** Fonction utilitaire pour vérifier si un texte correspond au chiffre attendu */
 function checkCorrectness(transcript) {
     const expected = state.currentIndex;
-    const wordList = FR_WORDS[expected] || [];
+    let wordList = FR_WORDS[expected] || [];
+    
+    // Ajout des mots personnalisés de l'instituteur
+    if (customWords[expected]) {
+      wordList = wordList.concat(customWords[expected]);
+    }
+    
     const normFull = normalize(transcript);
 
     const fullMatch = fuzzyMatch(normFull, wordList);
@@ -908,6 +940,41 @@ function setupButtons() {
 
   $$('btn-replay').addEventListener('click', () => startGame());
   $$('btn-retry').addEventListener('click', () => startGame());
+
+  // Logique du bouton d'apprentissage (Long Press de 1.5s)
+  const btnLearn = $$('btn-learn');
+  let learnTimeout = null;
+
+  const startLearnPress = (e) => {
+    e.preventDefault();
+    if (state.gameOver || state.isLearning) return;
+    
+    btnLearn.classList.add('filling');
+    learnTimeout = setTimeout(() => {
+      // Déclenchement du mode apprentissage !
+      state.isLearning = true;
+      AudioEngine.success(); // Petit son pour valider l'entrée en mode
+      $$('btn-mic').classList.add('learning-mode');
+      showFeedback('correct');
+      $$('feedback').textContent = "Dis le mot !";
+      
+      // Remise à zéro
+      btnLearn.classList.remove('filling');
+    }, 1500);
+  };
+
+  const cancelLearnPress = () => {
+    if (learnTimeout) clearTimeout(learnTimeout);
+    btnLearn.classList.remove('filling');
+  };
+
+  btnLearn.addEventListener('mousedown', startLearnPress);
+  btnLearn.addEventListener('touchstart', startLearnPress, {passive: false});
+  
+  btnLearn.addEventListener('mouseup', cancelLearnPress);
+  btnLearn.addEventListener('mouseleave', cancelLearnPress);
+  btnLearn.addEventListener('touchend', cancelLearnPress);
+  btnLearn.addEventListener('touchcancel', cancelLearnPress);
 }
 
 /** Vérifie localStorage pour afficher le bouton secret et le personnage secret */
