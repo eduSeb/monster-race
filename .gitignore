@@ -1,0 +1,6 @@
+# Certificats auto-signés (générés par serveur.js)
+cert.pem
+key.pem
+
+# Node
+node_modules/
