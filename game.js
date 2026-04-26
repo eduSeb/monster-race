@@ -130,7 +130,7 @@ const FR_WORDS = {
   10: ['dix', 'dis', '10'],
   11: ['onze', 'onz', '11'],
   12: ['douze', 'douz', '12'],
-  13: ['treize', 'trez', 'treze', 'treiz', 'teize', '13'],
+  13: ['treize', 'trez', 'treze', 'treiz', '13', 'teize'],
   14: ['quatorze', 'katorz', 'catorze', '14'],
   15: ['quinze', 'kenz', 'kinze', '15'],
   16: ['seize', 'sez', 'seiz', 'seze', '16'],
@@ -138,6 +138,8 @@ const FR_WORDS = {
   18: ['dix-huit', 'dix huit', '18'],
   19: ['dix-neuf', 'dix neuf', '19'],
   20: ['vingt', 'vin', 'vint', '20'],
+  21: ['vingt-et-un', '21'],
+  // ... (on garde les nombres longs tels quels)
   21: ['vingt-et-un', 'vingt et un', '21'],
   22: ['vingt-deux', 'vingt deux', '22'],
   23: ['vingt-trois', 'vingt trois', '23'],
@@ -208,12 +210,75 @@ function monsterSVG_E(size = 100) {
   </svg>`;
 }
 
+function monsterSVG_F(size = 100) {
+  // Monstre Arc-en-ciel (Nuage coloré)
+  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="rainbowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EF4444" />
+        <stop offset="25%" stop-color="#F59E0B" />
+        <stop offset="50%" stop-color="#10B981" />
+        <stop offset="75%" stop-color="#3B82F6" />
+        <stop offset="100%" stop-color="#8B5CF6" />
+      </linearGradient>
+    </defs>
+    <!-- nuage -->
+    <path d="M 25 70 A 15 15 0 0 1 25 45 A 22 22 0 0 1 70 35 A 18 18 0 0 1 85 60 A 15 15 0 0 1 80 80 Z" fill="url(#rainbowGrad)"/>
+    <circle cx="45" cy="55" r="8" fill="#fff"/>
+    <circle cx="65" cy="55" r="8" fill="#fff"/>
+    <circle cx="45" cy="55" r="4" fill="#000"/>
+    <circle cx="65" cy="55" r="4" fill="#000"/>
+    <path d="M 50 70 Q 55 75 60 70" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="35" cy="90" r="8" fill="#3B82F6"/>
+    <circle cx="75" cy="90" r="8" fill="#3B82F6"/>
+  </svg>`;
+}
+
+function monsterSVG_G(size = 100) {
+  // Monstre Rose
+  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 30 L35 15 L45 30 Z" fill="#F472B6"/>
+    <path d="M50 30 L65 15 L55 30 Z" fill="#F472B6"/>
+    <circle cx="50" cy="55" r="32" fill="#F472B6"/>
+    <circle cx="38" cy="45" r="10" fill="#fff"/>
+    <circle cx="62" cy="45" r="10" fill="#fff"/>
+    <circle cx="38" cy="46" r="5" fill="#BE185D"/>
+    <circle cx="62" cy="46" r="5" fill="#BE185D"/>
+    <ellipse cx="28" cy="55" rx="5" ry="3" fill="#FDA4AF"/>
+    <ellipse cx="72" cy="55" rx="5" ry="3" fill="#FDA4AF"/>
+    <path d="M 45 65 Q 50 72 55 65" fill="none" stroke="#9D174D" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="35" cy="85" rx="10" ry="8" fill="#DB2777"/>
+    <ellipse cx="65" cy="85" rx="10" ry="8" fill="#DB2777"/>
+  </svg>`;
+}
+
+function monsterSVG_H(size = 100) {
+  // Petit Dragon (Vert)
+  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 30 50 Q 10 30 15 20 Q 25 30 35 40 Z" fill="#34D399"/>
+    <path d="M 70 50 Q 90 30 85 20 Q 75 30 65 40 Z" fill="#34D399"/>
+    <circle cx="50" cy="60" r="28" fill="#10B981"/>
+    <circle cx="40" cy="50" r="9" fill="#fff"/>
+    <circle cx="60" cy="50" r="9" fill="#fff"/>
+    <circle cx="42" cy="48" r="4" fill="#047857"/>
+    <circle cx="58" cy="48" r="4" fill="#047857"/>
+    <circle cx="48" cy="60" r="1.5" fill="#047857"/>
+    <circle cx="52" cy="60" r="1.5" fill="#047857"/>
+    <path d="M 45 68 Q 50 72 55 68" fill="none" stroke="#064E3B" stroke-width="2"/>
+    <circle cx="38" cy="85" r="8" fill="#059669"/>
+    <circle cx="62" cy="85" r="8" fill="#059669"/>
+  </svg>`;
+}
+
 function getMonsterSVG(type, size) {
   if (type === 'A') return monsterSVG_A(size);
   if (type === 'B') return monsterSVG_B(size);
   if (type === 'C') return monsterSVG_C(size);
   if (type === 'D') return monsterSVG_D(size);
   if (type === 'E') return monsterSVG_E(size);
+  if (type === 'F') return monsterSVG_F(size);
+  if (type === 'G') return monsterSVG_G(size);
+  if (type === 'H') return monsterSVG_H(size);
   return monsterSVG_A(size);
 }
 
@@ -270,10 +335,16 @@ function initMonsterPreviews() {
   const choiceC = $$('choice-C');
   const choiceD = $$('choice-D');
   const choiceE = $$('choice-E');
+  const choiceF = $$('choice-F');
+  const choiceG = $$('choice-G');
+  const choiceH = $$('choice-H');
   if (choiceA) choiceA.innerHTML = monsterSVG_A(64);
   if (choiceC) choiceC.innerHTML = monsterSVG_C(64);
   if (choiceD) choiceD.innerHTML = monsterSVG_D(64);
   if (choiceE) choiceE.innerHTML = monsterSVG_E(64);
+  if (choiceF) choiceF.innerHTML = monsterSVG_F(64);
+  if (choiceG) choiceG.innerHTML = monsterSVG_G(64);
+  if (choiceH) choiceH.innerHTML = monsterSVG_H(64);
 
   // Initialiser les monstres sur les écrans
   renderMonstersInGame();
@@ -407,10 +478,12 @@ function levenshtein(a, b) {
  *    5+  lettres → 2 erreurs tolérées (katre→quatre, treze→treize…)
  */
 function fuzzyTol(word) {
-  // Plus d'indulgence pour les jeunes enfants : au moins 1 erreur de distance autorisée
-  if (word.length <= 5) return 1; 
-  if (word.length <= 8) return 2;
-  return 3;
+  // Tolérance adaptée aux jeunes enfants tout en évitant les faux positifs
+  if (word.length <= 2) return 0; // "un", "si" → exact uniquement
+  if (word.length <= 3) return 1; // "dix", "six", "deu" → 1 faute max
+  if (word.length <= 5) return 1; // "cinq", "trois", "neuf" → 1 faute max
+  if (word.length <= 8) return 2; // "quatre", "quinze" → 2 fautes max
+  return 3; // mots longs → 3 fautes max
 }
 
 /**
@@ -592,20 +665,58 @@ function endGame(result) {
   setTimeout(() => {
     if (result === 'win') {
       AudioEngine.victory(); // 🏆 MÉLODIE DE VICTOIRE
-      
-      // Débloquer le niveau spécial si on vient de finir le niveau 0-20
-      if (state.maxNumber === 20) {
-        localStorage.setItem('monster_master_unlocked', 'true');
-        checkSecretUnlock();
-      }
-
-      // Débloquer le monstre spécial si on vient de finir le Master Level (50)
-      if (state.maxNumber === 50) {
-        localStorage.setItem('monster_legendary_unlocked', 'true');
-        checkSecretUnlock();
-      }
-
       launchConfetti();
+
+      // Gestion des récompenses
+      const maxNum = state.maxNumber;
+      let newlyUnlocked = null;
+      let unlockKey = null;
+      let unlockType = null;
+      
+      if (maxNum === 5) { unlockKey = 'monster_unlocked_5'; unlockType = 'F'; }
+      else if (maxNum === 10) { unlockKey = 'monster_unlocked_10'; unlockType = 'G'; }
+      else if (maxNum === 15) { unlockKey = 'monster_unlocked_15'; unlockType = 'C'; }
+      else if (maxNum === 20) { unlockKey = 'monster_unlocked_20'; unlockType = 'H'; }
+      else if (maxNum === 30) { 
+        unlockKey = 'monster_unlocked_30'; 
+        unlockType = 'D'; 
+        // Débloquer aussi le niveau master
+        localStorage.setItem('monster_master_unlocked', 'true');
+      }
+      else if (maxNum === 50) { unlockKey = 'monster_legendary_unlocked'; unlockType = 'E'; }
+
+      if (unlockKey && localStorage.getItem(unlockKey) !== 'true') {
+        localStorage.setItem(unlockKey, 'true');
+        newlyUnlocked = unlockType;
+      }
+      
+      // Actualise les icônes d'accueil pour la prochaine fois
+      checkSecretUnlock();
+
+      // Prépare l'affichage de l'écran des scores
+      const winContent = document.querySelector('.win-content');
+      const giftOverlay = $$('gift-overlay');
+      const giftMonster = $$('gift-monster-display');
+      
+      if (newlyUnlocked && giftOverlay && giftMonster) {
+        // Affiche le cadeau
+        giftMonster.innerHTML = getMonsterSVG(newlyUnlocked, 180);
+        winContent.style.display = 'none';
+        giftOverlay.classList.remove('hidden');
+        
+        // Bouton pour fermer le cadeau et voir le score
+        const btnGift = $$('btn-gift-ok');
+        if (btnGift) {
+          btnGift.onclick = () => {
+             giftOverlay.classList.add('hidden');
+             winContent.style.display = 'flex';
+          };
+        }
+      } else {
+        // Pas de cadeau, on montre directement le score
+        winContent.style.display = 'flex';
+      }
+
       showScreen('win');
     } else {
       showScreen('lose');
@@ -675,9 +786,9 @@ async function initSpeech() {
   // pas de stop/start en boucle → plus de popup de permission.
   recognition = new SpeechRecognition();
   recognition.lang            = 'fr-FR';
-  recognition.continuous      = true;   // ← clé du correctif
-  recognition.interimResults  = false;
-  recognition.maxAlternatives = 3;
+  recognition.continuous      = true;   // Session continue
+  recognition.interimResults  = true;   // Renvoie les mots plus vite
+  recognition.maxAlternatives = 5;      // Plus d'alternatives = plus de chances de matcher
 
   recognition.onstart = () => {
     state.listening = true;
@@ -685,79 +796,94 @@ async function initSpeech() {
     $$('listening-indicator').classList.remove('hidden');
   };
 
-  // onend : en mode continu, ne se déclenche que sur arrêt forcé
+  // onend : sur mobile Chrome, la session se coupe souvent (timeout, bruit, etc.)
+  // On relance automatiquement avec un délai court.
   recognition.onend = () => {
     state.listening = false;
     $$('btn-mic').classList.remove('listening');
     $$('listening-indicator').classList.add('hidden');
-    // Ne relancer que si le jeu tourne encore et qu'on n'a pas perdu la permission
+    console.log('[Speech] Session terminée, relance...');
+    // Relancer systématiquement sauf si le jeu est fini ou permission refusée
     if (!state.gameOver && micPermissionGranted) {
-      setTimeout(() => startListening(), 400);
+      setTimeout(() => {
+        if (!state.gameOver && micPermissionGranted && !state.listening) {
+          startListening();
+        }
+      }, 300);
     }
   };
 
   recognition.onerror = (e) => {
-    console.warn('Speech error :', e.error);
+    console.warn('[Speech] Erreur :', e.error);
     if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-      micPermissionGranted = false; // ne pas relancer si refusé
+      micPermissionGranted = false;
       state.listening = false;
       $$('btn-mic').classList.remove('listening');
       $$('listening-indicator').classList.add('hidden');
+    } else if (e.error === 'no-speech' || e.error === 'audio-capture' || e.error === 'network') {
+      // Erreurs fréquentes sur mobile — on laisse onend relancer
+      console.log('[Speech] Erreur récupérable, onend va relancer.');
+    } else if (e.error === 'aborted') {
+      // Peut arriver si on appelle stop() pendant que ça tourne
+      console.log('[Speech] Session avortée.');
     }
-    // Pour 'no-speech' ou 'audio-capture', on laisse onend gérer le redémarrage
   };
 
   // Chaque résultat reçu : vérifier la réponse
   recognition.onresult = (event) => {
-    // Si la machine parle ou si on vient juste de valider un chiffre, on ignore
-    if (state.isSpeaking || state.ignoreInputUntil > Date.now()) return;
+    // Si on vient juste de valider un chiffre de façon normale, on ignore
+    // Mais on n'ignore PAS si on est en mode apprentissage (pour capter même pendant que ça parle)
+    if (!state.isLearning && (state.isSpeaking || state.ignoreInputUntil > Date.now())) return;
 
-    const idx = event.resultIndex;
-    const result = event.results[idx];
+    // On parcourt les nouveaux résultats (notamment les résultats partiels hyper-rapides)
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      const result = event.results[i];
 
-    // MODE APPRENTISSAGE : intercepter le prochain mot
-    if (state.isLearning) {
-      if (result[0].confidence > 0.0) {
-        const newWord = normalize(result[0].transcript);
-        const expected = state.currentIndex;
-        if (!customWords[expected]) customWords[expected] = [];
-        if (!customWords[expected].includes(newWord)) {
-           customWords[expected].push(newWord);
-           localStorage.setItem('monster_custom_words', JSON.stringify(customWords));
+      // MODE APPRENTISSAGE : intercepter le premier son
+      if (state.isLearning) {
+        const transcript = result[0].transcript.trim();
+        if (transcript.length > 0) {
+          const newWord = normalize(transcript);
+          const expected = state.currentIndex;
+          if (!customWords[expected]) customWords[expected] = [];
+          if (newWord.length > 0 && !customWords[expected].includes(newWord)) {
+             customWords[expected].push(newWord);
+             localStorage.setItem('monster_custom_words', JSON.stringify(customWords));
+          }
+          console.log(`[Learn] Mot appris : "${newWord}" pour le chiffre ${expected} (brut: "${transcript}")`);
+          
+          state.isLearning = false;
+          $$('btn-mic').classList.remove('learning-mode');
+          
+          handleCorrectAnswer();
         }
-        console.log(`[Learn] Mot appris : "${newWord}" pour le chiffre ${expected}`);
-        
-        state.isLearning = false;
-        $$('btn-mic').classList.remove('learning-mode');
-        
-        // Joue le succès et avance
-        handleCorrectAnswer();
+        return; // Le mode apprentissage est un "one-shot", on sort
       }
-      return;
-    }
 
-    // On parcourt les alternatives. Si l'une d'elles match avec une confiance suffisante, on valide.
-    for (let i = 0; i < result.length; i++) {
-        const alt = result[i];
-        const minConf = i === 0 ? 0.30 : 0.50; // Seuils abaissés pour les voix douces des enfants
+      // MODE JEU NORMAL
+      // On parcourt les alternatives. Si l'une d'elles match, on valide.
+      for (let j = 0; j < result.length; j++) {
+          const alt = result[j];
+          // Sur mobile, la confiance est souvent 0. On accepte tout.
+          const transcript = alt.transcript.trim();
+          if (transcript.length === 0) continue;
+          
+          console.log(`[Speech] Alt ${j} (conf:${(alt.confidence||0).toFixed(2)}, final:${result.isFinal}): "${transcript}"`);
+          
+          if (checkCorrectness(transcript)) {
+              console.log(`[Speech] ✓ Validé : "${transcript}"`);
+              handleCorrectAnswer();
+              return; 
+          }
+      }
 
-        if (alt.confidence >= minConf) {
-            const transcript = alt.transcript.trim();
-            console.log(`[Speech] Alternative ${i} (conf:${alt.confidence.toFixed(2)}): "${transcript}"`);
-            
-            // On vérifie si ce transcript est correct pour le chiffre actuel
-            // Si oui, on traite et on arrête de boucler sur les alternatives
-            if (checkCorrectness(transcript)) {
-                handleCorrectAnswer();
-                return; 
-            }
-        }
-    }
-
-    // Si aucune alternative n'est "correcte" mais que la meilleure a une confiance minimum, 
-    // on signale l'erreur (seuil abaissé à 0.4 pour capter les petites voix)
-    if (result[0].confidence > 0.4) {
-        handleWrongAnswer(result[0].transcript);
+      // Si le son est "final" (le navigateur a décidé que la phrase est finie) et qu'aucune alternative n'est bonne
+      // On déclenche l'erreur. Cela évite de punir un gamin au milieu d'un mot.
+      if (result.isFinal) {
+          if (result[0].confidence > 0.3 || result[0].confidence === 0) {
+              handleWrongAnswer(result[0].transcript);
+          }
+      }
     }
   };
 }
@@ -819,8 +945,15 @@ function handleWrongAnswer(transcript) {
 }
 
 function startListening() {
-  if (!recognition || state.listening || state.gameOver || !micPermissionGranted) return;
-  try { recognition.start(); } catch(e) { /* déjà démarré */ }
+  if (!recognition || state.gameOver || !micPermissionGranted) return;
+  if (state.listening) return; // déjà actif
+  try {
+    recognition.start();
+    console.log('[Speech] Micro démarré.');
+  } catch(e) {
+    // Si déjà démarré, on ignore silencieusement
+    console.log('[Speech] start() ignoré :', e.message);
+  }
 }
 
 function stopListening() {
@@ -883,15 +1016,6 @@ function setupButtons() {
     startGame();
   });
 
-  // Bouton Musique (optionnel si on l'ajoute plus tard)
-  const btnMusic = $$('btn-music');
-  if (btnMusic) {
-    btnMusic.addEventListener('click', () => {
-      const isON = AudioEngine.toggleMusic();
-      btnMusic.textContent = isON ? '🎵' : '🔇';
-    });
-  }
-
   // Vérifier si le niveau secret est déjà débloqué
   checkSecretUnlock();
 
@@ -915,6 +1039,17 @@ function setupButtons() {
       renderMonstersInGame();
     });
   });
+
+  // Gestion de la musique
+  const btnMusicEl = $$('btn-music');
+  if (btnMusicEl) {
+    btnMusicEl.addEventListener('click', () => {
+      AudioEngine.musicEnabled = !AudioEngine.musicEnabled;
+      btnMusicEl.textContent = AudioEngine.musicEnabled ? '🎵' : '🔇';
+      if (AudioEngine.musicEnabled) AudioEngine.startBackgroundMusic();
+      else AudioEngine.stopBackgroundMusic();
+    });
+  }
 
   // Réglage de la vitesse
   const speedInput = $$('input-speed');
@@ -946,8 +1081,24 @@ function setupButtons() {
   let learnTimeout = null;
 
   const startLearnPress = (e) => {
-    e.preventDefault();
-    if (state.gameOver || state.isLearning) return;
+    // Sur mobile, eviter mousedown si touchstart
+    if (e.type === 'touchstart') {
+      // e.preventDefault() peut casser en mode passif sur certains nav, mais ici c'est non passif.
+    }
+
+    if (state.gameOver) return;
+    
+    // Toggle: on peut annuler si on a cliqué par erreur
+    if (state.isLearning) {
+      state.isLearning = false;
+      AudioEngine.error(); // Son d'annulation
+      $$('btn-mic').classList.remove('learning-mode');
+      $$('feedback').textContent = "Apprentissage annulé";
+      btnLearn.classList.remove('filling');
+      return;
+    }
+
+    if (learnTimeout) clearTimeout(learnTimeout);
     
     btnLearn.classList.add('filling');
     learnTimeout = setTimeout(() => {
@@ -979,18 +1130,27 @@ function setupButtons() {
 
 /** Vérifie localStorage pour afficher le bouton secret et le personnage secret */
 function checkSecretUnlock() {
-  // Niveau Master
-  const masterUnlocked = localStorage.getItem('monster_master_unlocked') === 'true';
-  const secretBtn = $$('level-btn-secret');
-  if (masterUnlocked && secretBtn) {
-    secretBtn.classList.remove('hidden');
+  const map = {
+    'monster_unlocked_5': 'choice-F',
+    'monster_unlocked_10': 'choice-G',
+    'monster_unlocked_15': 'choice-C',
+    'monster_unlocked_20': 'choice-H',
+    'monster_unlocked_30': 'choice-D',
+    'monster_legendary_unlocked': 'choice-E',
+  };
+  
+  // Révèle les monstres
+  for (let key in map) {
+    if (localStorage.getItem(key) === 'true') {
+      const el = $$(map[key]);
+      if (el) el.classList.remove('hidden');
+    }
   }
 
-  // Monstre Légendaire
-  const monsterUnlocked = localStorage.getItem('monster_legendary_unlocked') === 'true';
-  const choiceE = $$('choice-E');
-  if (monsterUnlocked && choiceE) {
-    choiceE.classList.remove('hidden');
+  // Niveau Master (Débloqué après le niv 30 ou si déjà active dans de vieilles saves niv 20)
+  if (localStorage.getItem('monster_master_unlocked') === 'true') {
+    const secretBtn = $$('level-btn-secret');
+    if (secretBtn) secretBtn.classList.remove('hidden');
   }
 }
 
@@ -1001,5 +1161,15 @@ document.addEventListener('DOMContentLoaded', () => {
   initMonsterPreviews();
   initSpeech();
   setupButtons();
+  checkSecretUnlock();
   showScreen('home');
+
+  // Démarrer la musique au premier clic n'importe où (requis par Chrome)
+  const startAudioOnFirstClick = () => {
+    AudioEngine.startBackgroundMusic();
+    document.removeEventListener('click', startAudioOnFirstClick);
+    document.removeEventListener('touchstart', startAudioOnFirstClick);
+  };
+  document.addEventListener('click', startAudioOnFirstClick);
+  document.addEventListener('touchstart', startAudioOnFirstClick);
 });
