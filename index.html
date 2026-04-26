@@ -2,108 +2,122 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  
-  <!-- PWA & Mobile Viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#4ADE80">
-  
-  <title>Monster Race - Math & Voix pour Maternelle</title>
-  
-  <!-- Google Fonts pour un look doux et lisible -->
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Course des Monstres" />
+  <meta name="theme-color" content="#87CEEB" />
+  <title>La Course des Monstres — Apprends les chiffres !</title>
+  <meta name="description" content="Un jeu de course amusant pour apprendre les chiffres de 0 à 20 en parlant !" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
+  <button id="btn-music" class="btn-audio-toggle" aria-label="Couper/Activer la musique">🎵</button>
+
   <!-- ══════════════════ ÉCRAN D'ACCUEIL ══════════════════ -->
-  <div id="screen-home" class="screen screen-home active">
-    <!-- Décor de fond -->
-    <div class="clouds"></div>
-    <div class="clouds cloud-2"></div>
-    
-    <div class="home-panel">
-      <h1 class="logo-title">
-        <span class="logo-text">Monster</span> 
-        <span class="logo-text accent">Race</span>
-      </h1>
-      <p class="subtitle">Utilise ta voix pour faire courir le monstre !</p>
-
-      <!-- Section: Choix du personnage -->
-      <div class="config-section">
-        <div class="config-title">Choisis ton coureur :</div>
-        <div class="monster-choices">
+  <div id="screen-home" class="screen active">
+    <div class="home-bg">
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
+    </div>
+    <div class="home-content">
+      <h1 class="title-main">La Course<br/><span class="title-accent">des Monstres</span></h1>
+      <p class="title-sub">Apprends les chiffres en jouant !</p>
+      <div class="character-selection">
+        <p class="settings-label">Choisis ton monstre :</p>
+        <div class="monster-options">
           <div class="monster-choice active" data-monster="A" id="choice-A"></div>
-          <div class="monster-choice" data-monster="C" id="choice-C"></div>
-          <div class="monster-choice" data-monster="D" id="choice-D"></div>
-          <div class="monster-choice hidden" data-monster="E" id="choice-E" title="Légendaire !"></div>
+          <div class="monster-choice hidden" data-monster="F" id="choice-F"></div>
+          <div class="monster-choice hidden" data-monster="G" id="choice-G"></div>
+          <div class="monster-choice hidden" data-monster="C" id="choice-C"></div>
+          <div class="monster-choice hidden" data-monster="H" id="choice-H"></div>
+          <div class="monster-choice hidden" data-monster="D" id="choice-D"></div>
+          <div class="monster-choice hidden" data-monster="E" id="choice-E"></div>
+        </div>
+      </div>
+      <button id="btn-start" class="btn-primary" aria-label="Commencer le jeu">
+        <span>🎮 Jouer !</span>
+      </button>
+
+      <div class="level-selection">
+        <p class="settings-label">Combien de chiffres ?</p>
+        <div class="level-options">
+          <button class="level-btn" data-max="5">0 à 5</button>
+          <button class="level-btn" data-max="10">0 à 10</button>
+          <button class="level-btn" data-max="15">0 à 15</button>
+          <button class="level-btn active" data-max="20">0 à 20</button>
+          <button class="level-btn" data-max="30">0 à 30</button>
+          <button id="level-btn-secret" class="level-btn level-btn-special hidden" data-max="50">🌟 Master (0-50)</button>
         </div>
       </div>
 
-      <!-- Section: Difficulté -->
-      <div class="config-section">
-        <div class="config-title">Jusqu'à combien sais-tu compter ?</div>
-        <div class="level-selector">
-          <button class="level-btn active" data-max="10">10</button>
-          <button class="level-btn" data-max="20">20</button>
-          <button class="level-btn" data-max="30">30</button>
-          <button class="level-btn hidden" id="level-btn-secret" data-max="50" title="Master Level !">👑 50</button>
+      <div class="settings-zone">
+        <p class="settings-label">Vitesse du monstre violet :</p>
+        <div class="speed-control">
+          <span>🐢</span>
+          <input type="range" id="input-speed" min="2000" max="8000" step="500" value="4500" dir="rtl">
+          <span>🐇</span>
         </div>
       </div>
-
-      <!-- Section: Vitesse du chrono -->
-      <div class="config-section slider-section">
-        <div class="config-title">
-          Vitesse du monstre chrono
-        </div>
-        <input type="range" id="input-speed" min="2000" max="6000" step="500" value="4500" class="speed-slider" title="Plus le curseur est à gauche, plus le chrono va vite !">
-        <div class="speed-labels">
-          <span>Rapide 🏃💨</span>
-          <span>Lent 🐢</span>
-        </div>
-      </div>
-
-      <button id="btn-start" class="btn-primary pulse">Jouer !</button>
+      
+      <p class="hint-text">Dis le chiffre à voix haute pour avancer !</p>
     </div>
   </div>
 
   <!-- ══════════════════ ÉCRAN DE JEU ══════════════════ -->
-  <div id="screen-game" class="screen screen-game">
-    
-    <!-- Zone Piste (Monstres) -->
-    <div class="track-area">
-      <!-- Chemin du drapeau (décoration) -->
-      <div class="finish-line">
-        <div class="flag">🏁</div>
-      </div>
+  <div id="screen-game" class="screen">
 
-      <div class="track track-player">
-        <!-- SVG Monstre Joueur inséré en JS -->
-        <div id="monster-player" class="monster-player"></div>
-      </div>
+    <!-- Décors arrière-plan -->
+    <div class="sky">
+      <div class="cloud cloud-game cloud-g1"></div>
+      <div class="cloud cloud-game cloud-g2"></div>
+      <div class="sun"></div>
+    </div>
 
-      <!-- Zone bande de chiffres au centre -->
+    <!-- Bande de chiffres 0-20 -->
+    <div class="number-zone" aria-live="polite" aria-label="Chiffres de 0 à 20">
+      <p class="number-label">Dis ce chiffre !</p>
       <div class="number-strip-wrapper">
         <div id="number-strip" class="number-strip">
-          <!-- Spans générés par JS -->
+          <!-- Les spans 0..20 sont créés par JS -->
         </div>
-      </div>
-
-      <div class="track track-timer">
-        <!-- SVG Monstre Timer inséré en JS -->
-        <div id="monster-timer" class="monster-timer"></div>
       </div>
     </div>
 
-    <!-- Zone Feedback & Contrôles -->
-    <div class="control-area">
-      <!-- Message : Bravo / Essaie encore -->
-      <div id="feedback" class="feedback hidden">Bravo !</div>
-      
-      <!-- Bouton Micro -->
+    <!-- Feedback visuel -->
+    <div id="feedback" class="feedback hidden" aria-live="assertive"></div>
+
+    <!-- Piste de course — JOUEUR (haut) -->
+    <div class="track track-player" aria-label="Piste du joueur">
+      <div class="track-ground track-ground-player"></div>
+      <div class="track-line"></div>
+      <div class="finish-flag flag-player">🏁</div>
+      <div id="monster-player" class="monster monster-player" role="img" aria-label="Ton monstre">
+        <!-- rendu par JS -->
+      </div>
+    </div>
+
+    <!-- Séparateur herbe -->
+    <div class="grass-strip"></div>
+
+    <!-- Piste de course — TIMER (bas) -->
+    <div class="track track-timer" aria-label="Piste du timer">
+      <div class="track-ground track-ground-timer"></div>
+      <div class="track-line"></div>
+      <div class="finish-flag flag-timer">🏁</div>
+      <div id="monster-timer" class="monster monster-timer" role="img" aria-label="Monstre timer">
+        <!-- rendu par JS -->
+      </div>
+    </div>
+
+    <!-- Bouton micro -->
+    <div class="mic-zone">
       <button id="btn-mic" class="btn-mic" aria-label="Appuie et parle !">
         <svg class="mic-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="9" y="2" width="6" height="11" rx="3" fill="currentColor"/>
@@ -134,20 +148,29 @@
       <div class="confetti-container" id="confetti-container"></div>
     </div>
     <div class="win-content">
-      <div id="win-monster-display" class="win-monster"></div>
-      <h2 class="win-title">GAGNÉ !</h2>
-      <p class="win-score">Tu es un champion des chiffres !</p>
-      <button id="btn-replay" class="btn-primary">Rejouer</button>
+      <div class="win-monster" id="win-monster-display"></div>
+      <h2 class="win-title">🎉 Bravo !</h2>
+      <p class="win-score">Tu as dit tous les chiffres !</p>
+      <div class="stars-row">⭐⭐⭐</div>
+      <button id="btn-replay" class="btn-primary btn-replay" aria-label="Rejouer">Rejouer !</button>
+    </div>
+    
+    <!-- OVERLAY CADEAU -->
+    <div id="gift-overlay" class="gift-overlay hidden">
+      <h2 class="gift-title">🎁 Nouveau Cadeau ! 🎁</h2>
+      <p class="gift-text">Tu as débloqué un nouveau compagnon !</p>
+      <div class="gift-monster" id="gift-monster-display"></div>
+      <button id="btn-gift-ok" class="btn-primary">Super !</button>
     </div>
   </div>
 
   <!-- ══════════════════ ÉCRAN DÉFAITE ══════════════════ -->
   <div id="screen-lose" class="screen screen-lose">
     <div class="lose-content">
-      <div id="lose-monster-display" class="win-monster lose-monster"></div>
-      <h2 class="lose-title">Oups...</h2>
-      <p class="win-score">Le requin violet t'a rattrapé !</p>
-      <button id="btn-retry" class="btn-primary">Réessayer</button>
+      <div class="lose-monster" id="lose-monster-display"></div>
+      <h2 class="lose-title">Oh non !</h2>
+      <p class="lose-text">Le monstre timer est arrivé en premier…<br/>Essaie encore !</p>
+      <button id="btn-retry" class="btn-primary btn-retry" aria-label="Réessayer">Réessayer !</button>
     </div>
   </div>
 
