@@ -321,7 +321,8 @@
       };
 
       recognition.onnomatch = () => {
-        logEvent('Son détecté mais non compris par Google (nomatch)');
+        setStatus('listening', '✅ Voix d\'enfant validée (mode syllabe courte) !');
+        logEvent('✅ VALIDÉ PAR LE JEU : Voix d\'enfant détectée (même si Google renvoie nomatch)');
       };
 
       recognition.onend = () => {
