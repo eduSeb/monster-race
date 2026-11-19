@@ -52,6 +52,11 @@ const AudioEngine = {
     this.playNote(220, 0.3, 'triangle', 0.15); // A3
   },
 
+  /** Bip d'alerte discret quand le monstre timer approche de l'arrivée */
+  timerWarning() {
+    this.playNote(440, 0.12, 'sine', 0.06); // A4 doux
+  },
+
   /** Mélodie de victoire */
   victory() {
     const notes = [
@@ -597,6 +602,12 @@ function startTimer() {
     if (state.gameOver) return;
     state.timerPos++;
     updateMonsterPositions();
+
+    // Bip sonore uniquement sur les 3 derniers déplacements avant la ligne d'arrivée
+    const remainingSteps = NUMBERS.length - state.timerPos;
+    if (remainingSteps > 0 && remainingSteps <= 3) {
+      AudioEngine.timerWarning();
+    }
     
     // Animation secousse monstre timer
     const mt = $$('monster-timer');
@@ -1231,9 +1242,11 @@ document.addEventListener('DOMContentLoaded', () => {
   checkSecretUnlock();
   showScreen('home');
 
-  // Démarrer la musique au premier clic n'importe où (requis par Chrome)
+  // Démarrer la musique au premier clic sur l'écran d'accueil uniquement (requis par Chrome)
   const startAudioOnFirstClick = () => {
-    AudioEngine.startBackgroundMusic();
+    if (screens.home && screens.home.classList.contains('active')) {
+      AudioEngine.startBackgroundMusic();
+    }
     document.removeEventListener('click', startAudioOnFirstClick);
     document.removeEventListener('touchstart', startAudioOnFirstClick);
   };
