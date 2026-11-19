@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Calibrage Voix — La Course des Monstres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Baloo 2', system-ui, sans-serif;
+      background: linear-gradient(180deg, #87CEEB 0%, #B8F0A0 100%);
+      min-height: 100vh;
+      padding: 16px;
+      color: #1F2937;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: rgba(255, 255, 255, 0.94);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-align: center;
+      color: #FF3E6C;
+      line-height: 1.15;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      text-align: center;
+      color: #4B5563;
+      line-height: 1.35;
+    }
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .step-pill {
+      flex: 1;
+      text-align: center;
+      padding: 4px 0;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: #E5E7EB;
+      color: #6B7280;
+      cursor: pointer;
+    }
+    .step-pill.done { background: #34D399; color: #fff; }
+    .step-pill.active { background: #FF3E6C; color: #fff; transform: scale(1.08); }
+
+    .target-box {
+      background: linear-gradient(135deg, #FF3E6C, #FF8C42);
+      color: #fff;
+      border-radius: 20px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 6px 0 #C62A47;
+    }
+    .target-label { font-size: 1rem; opacity: 0.92; }
+    .target-number { font-size: 4.5rem; font-weight: 800; line-height: 1; }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: #F3F4F6;
+      color: #374151;
+    }
+    .status-bar.listening { background: #D1FAE5; color: #065F46; }
+    .status-bar.error { background: #FEE2E2; color: #991B1B; }
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #9CA3AF;
+    }
+    .status-bar.listening .dot {
+      background: #10B981;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.5; }
+    }
+
+    .heard-box {
+      background: #F9FAFB;
+      border: 2px dashed #D1D5DB;
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 88px;
+      max-height: 160px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+    .heard-empty { color: #9CA3AF; text-align: center; padding-top: 16px; }
+    .heard-item {
+      padding: 4px 8px;
+      margin-bottom: 4px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      word-break: break-word;
+    }
+    .heard-item.final { border-color: #60A5FA; background: #EFF6FF; }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.1s;
+    }
+    button:active { transform: translateY(2px); }
+    .btn-primary {
+      background: linear-gradient(135deg, #FF3E6C, #FF8C42);
+      color: #fff;
+      box-shadow: 0 4px 0 #C62A47;
+      width: 100%;
+    }
+    .btn-next {
+      flex: 2;
+      background: linear-gradient(135deg, #10B981, #059669);
+      color: #fff;
+      box-shadow: 0 4px 0 #047857;
+    }
+    .btn-secondary {
+      flex: 1;
+      background: #E5E7EB;
+      color: #374151;
+      box-shadow: 0 4px 0 #9CA3AF;
+    }
+    .btn-copy {
+      background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+      color: #fff;
+      box-shadow: 0 4px 0 #5B21B6;
+      width: 100%;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      border-radius: 12px;
+      border: 2px solid #D1D5DB;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      background: #F9FAFB;
+      color: #111827;
+    }
+    .hidden { display: none !important; }
+    .back-link {
+      text-align: center;
+      margin-top: 4px;
+      font-size: 0.9rem;
+    }
+    .back-link a { color: #2563EB; font-weight: 700; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎤 Calibrage Voix (0 à 10)</h1>
+    <p class="subtitle">
+      Fais compter ta fille devant le micro, chiffre par chiffre, puis appuie sur <strong>Suivant</strong> après chaque chiffre (même si ce n'est pas reconnu).
+    </p>
+
+    <div id="progress-row" class="progress-row"></div>
+
+    <div id="setup-zone">
+      <button id="btn-start" class="btn-primary">🎙️ Démarrer le calibrage</button>
+    </div>
+
+    <div id="capture-zone" class="hidden">
+      <div class="target-box">
+        <div class="target-label">Dis ce chiffre :</div>
+        <div id="target-number" class="target-number">0</div>
+      </div>
+
+      <div id="status-bar" class="status-bar">
+        <span class="dot"></span>
+        <span id="status-text">En attente du micro…</span>
+      </div>
+
+      <div id="heard-box" class="heard-box">
+        <div class="heard-empty">Ce que le téléphone entend apparaîtra ici…</div>
+      </div>
+
+      <div class="btn-row">
+        <button id="btn-prev" class="btn-secondary">← Préc.</button>
+        <button id="btn-next" class="btn-next">Chiffre suivant →</button>
+      </div>
+    </div>
+
+    <div id="report-zone" class="hidden">
+      <p class="subtitle"><strong>✅ Calibrage terminé !</strong> Copie ce rapport et colle-le dans la conversation :</p>
+      <textarea id="report-output" readonly></textarea>
+      <button id="btn-copy" class="btn-copy" style="margin-top:10px;">📋 Copier le rapport</button>
+      <button id="btn-restart" class="btn-secondary" style="width:100%;margin-top:10px;">🔄 Recommencer</button>
+    </div>
+
+    <div class="back-link">
+      <a href="index.html">← Retour au jeu</a>
+    </div>
+  </div>
+
+  <script>
+    const MAX_NUM = 10;
+    let currentNum = 0;
+    let recognition = null;
+    let isRunning = false;
+    const captures = {}; // { "0": [ { isFinal, alts: [{t, c}] } ] }
+
+    for (let i = 0; i <= MAX_NUM; i++) captures[i] = [];
+
+    const $ = id => document.getElementById(id);
+
+    function renderPills() {
+      const row = $('progress-row');
+      row.innerHTML = '';
+      for (let i = 0; i <= MAX_NUM; i++) {
+        const pill = document.createElement('div');
+        pill.className = 'step-pill' + (i === currentNum ? ' active' : (captures[i].length > 0 ? ' done' : ''));
+        pill.textContent = i;
+        pill.onclick = () => {
+          if (!isRunning) return;
+          currentNum = i;
+          updateUI();
+        };
+        row.appendChild(pill);
+      }
+    }
+
+    function updateUI() {
+      $('target-number').textContent = currentNum;
+      $('btn-prev').disabled = currentNum === 0;
+      $('btn-next').textContent = currentNum === MAX_NUM ? 'Terminer ✓' : 'Chiffre suivant →';
+      renderPills();
+      renderHeard();
+    }
+
+    function renderHeard() {
+      const box = $('heard-box');
+      const list = captures[currentNum];
+      if (!list || list.length === 0) {
+        box.innerHTML = '<div class="heard-empty">Parle… ce que le micro entend s\'affiche ici.</div>';
+        return;
+      }
+      box.innerHTML = list.map(entry => {
+        const altsText = entry.alts.map(a => `"${a.t}" (${a.c})`).join(' | ');
+        return `<div class="heard-item ${entry.isFinal ? 'final' : ''}"><strong>${entry.isFinal ? 'FINAL' : 'en cours'}:</strong> ${altsText}</div>`;
+      }).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function setStatus(mode, text) {
+      const bar = $('status-bar');
+      bar.className = 'status-bar ' + mode;
+      $('status-text').textContent = text;
+    }
+
+    function initSpeech() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        setStatus('error', 'Reconnaissance vocale non supportée sur ce navigateur.');
+        return false;
+      }
+      recognition = new SR();
+      recognition.lang = 'fr-FR';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 5;
+
+      recognition.onstart = () => setStatus('listening', 'Micro actif — écoute en cours…');
+
+      recognition.onend = () => {
+        if (isRunning) {
+          setStatus('', 'Reconnexion micro…');
+          setTimeout(() => {
+            if (isRunning) {
+              try { recognition.start(); } catch (e) {}
+            }
+          }, 250);
+        }
+      };
+
+      recognition.onerror = (e) => {
+        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+          isRunning = false;
+          setStatus('error', 'Permission micro refusée.');
+        } else {
+          setStatus('', `Pause micro (${e.error}), relance…`);
+        }
+      };
+
+      recognition.onresult = (event) => {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const res = event.results[i];
+          const alts = [];
+          for (let j = 0; j < res.length; j++) {
+            const t = res[j].transcript.trim();
+            if (t) alts.push({ t, c: Number((res[j].confidence || 0).toFixed(2)) });
+          }
+          if (alts.length > 0) {
+            captures[currentNum].push({ isFinal: res.isFinal, alts });
+            renderHeard();
+          }
+        }
+      };
+
+      return true;
+    }
+
+    function buildReport() {
+      const summary = {
+        userAgent: navigator.userAgent,
+        date: new Date().toISOString(),
+        captures: {}
+      };
+      for (let i = 0; i <= MAX_NUM; i++) {
+        summary.captures[i] = captures[i].map(e => ({
+          f: e.isFinal ? 1 : 0,
+          a: e.alts.map(x => `${x.t}[${x.c}]`)
+        }));
+      }
+      return JSON.stringify(summary, null, 2);
+    }
+
+    $('btn-start').onclick = () => {
+      if (!initSpeech()) return;
+      isRunning = true;
+      $('setup-zone').classList.add('hidden');
+      $('capture-zone').classList.remove('hidden');
+      updateUI();
+      try { recognition.start(); } catch (e) {}
+    };
+
+    $('btn-prev').onclick = () => {
+      if (currentNum > 0) {
+        currentNum--;
+        updateUI();
+      }
+    };
+
+    $('btn-next').onclick = () => {
+      if (currentNum < MAX_NUM) {
+        currentNum++;
+        updateUI();
+      } else {
+        isRunning = false;
+        try { recognition.stop(); } catch (e) {}
+        $('capture-zone').classList.add('hidden');
+        $('report-zone').classList.remove('hidden');
+        $('report-output').value = buildReport();
+      }
+    };
+
+    $('btn-copy').onclick = async () => {
+      const text = $('report-output').value;
+      try {
+        await navigator.clipboard.writeText(text);
+        $('btn-copy').textContent = '✅ Copié !';
+      } catch (e) {
+        $('report-output').select();
+        document.execCommand('copy');
+        $('btn-copy').textContent = '✅ Copié !';
+      }
+      setTimeout(() => { $('btn-copy').textContent = '📋 Copier le rapport'; }, 2000);
+    };
+
+    $('btn-restart').onclick = () => {
+      for (let i = 0; i <= MAX_NUM; i++) captures[i] = [];
+      currentNum = 0;
+      $('report-zone').classList.add('hidden');
+      $('setup-zone').classList.remove('hidden');
+      renderPills();
+    };
+
+    renderPills();
+  </script>
+</body>
+</html>
