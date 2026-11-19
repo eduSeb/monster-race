@@ -117,29 +117,27 @@ const TRACK_RIGHT_OFFSET = 88;    // % d'arrivée (laisse place au drapeau)
 // Variantes de prononciation — enrichies pour jeunes enfants (maternelle).
 // Les accents sont supprimés par normalize(), inutile de les répéter.
 const FR_WORDS = {
-   0: ['zero', 'zewo', 'zebo', '0'],
-   1: ['un', 'une', 'eun', '1'],
-   2: ['deux', 'deu', '2'],
-   3: ['trois', 'twa', 'twoi', 'tros', '3'],
-   4: ['quatre', 'katr', 'kat', 'catre', 'katre', '4'],
-   5: ['cinq', 'sank', 'sink', '5'],
-   6: ['six', 'si', 'sis', '6'],
-   7: ['sept', 'set', 'sete', '7'],
-   8: ['huit', 'wit', 'wuit', 'huite', '8'],
-   9: ['neuf', 'nef', '9'],
-  10: ['dix', 'dis', '10'],
-  11: ['onze', 'onz', '11'],
-  12: ['douze', 'douz', '12'],
-  13: ['treize', 'trez', 'treze', 'treiz', '13', 'teize'],
-  14: ['quatorze', 'katorz', 'catorze', '14'],
-  15: ['quinze', 'kenz', 'kinze', '15'],
-  16: ['seize', 'sez', 'seiz', 'seze', '16'],
-  17: ['dix-sept', 'dix sept', '17'],
-  18: ['dix-huit', 'dix huit', '18'],
+   0: ['zero', 'zewo', 'zebo', 'ero', 'hero', 'z', 'o', 'eau', 'au', '0'],
+   1: ['un', 'une', 'eun', 'hein', 'hin', 'han', 'an', 'en', 'in', 'ain', 'aim', 'on', 'om', 'ah', 'ha', 'a', 'euh', 'eu', 'heu', 'hum', 'hm', 'uh', 'h', 'lun', 'l un', 'la', 'le', '1'],
+   2: ['deux', 'deu', 'de', 'du', 'do', 'd', 'da', 'te', 'gueux', 'dieu', '2'],
+   3: ['trois', 'twa', 'twoi', 'tros', 'troi', 'toi', 'toit', 'roi', 'oua', 'wa', 'oi', 'croix', 'froid', 'droit', '3'],
+   4: ['quatre', 'katr', 'kat', 'catre', 'katre', 'cat', 'carte', 'atre', 'ka', 'ca', 'cap', 'cadre', '4'],
+   5: ['cinq', 'sank', 'sink', 'saint', 'sein', 'ceint', 'cin', 'sain', 'sa', 'ca', 'sac', '5'],
+   6: ['six', 'si', 'sis', 'ci', 'sisse', 'cisse', 'isse', 'fils', 's', 'c', 'suis', 'ici', '6'],
+   7: ['sept', 'set', 'sete', 'cette', 'cet', 'c est', 'sait', 'sette', 'ce', 'se', 'tete', 'fete', '7'],
+   8: ['huit', 'wit', 'wuit', 'huite', 'oui', 'ui', 'uit', 'vite', 'ouit', 'nuit', 'suite', '8'],
+   9: ['neuf', 'nef', 'oeuf', 'ne', 'meuf', 'neuve', 'noeud', '9'],
+  10: ['dix', 'dis', 'di', 'dit', 'dise', 'lys', 'vis', 'bis', '10'],
+  11: ['onze', 'onz', 'on', 'once', 'honte', '11'],
+  12: ['douze', 'douz', 'douce', 'doute', 'douche', 'ouze', '12'],
+  13: ['treize', 'trez', 'treze', 'treiz', '13', 'teize', 'fraise'],
+  14: ['quatorze', 'katorz', 'catorze', 'atorze', '14'],
+  15: ['quinze', 'kenz', 'kinze', 'caisse', '15'],
+  16: ['seize', 'sez', 'seiz', 'seze', 'chaise', '16'],
+  17: ['dix-sept', 'dix sept', 'disette', '17'],
+  18: ['dix-huit', 'dix huit', 'biscuit', '18'],
   19: ['dix-neuf', 'dix neuf', '19'],
-  20: ['vingt', 'vin', 'vint', '20'],
-  21: ['vingt-et-un', '21'],
-  // ... (on garde les nombres longs tels quels)
+  20: ['vingt', 'vin', 'vint', 'vain', 'viens', 'va', '20'],
   21: ['vingt-et-un', 'vingt et un', '21'],
   22: ['vingt-deux', 'vingt deux', '22'],
   23: ['vingt-trois', 'vingt trois', '23'],
@@ -151,24 +149,24 @@ const FR_WORDS = {
   29: ['vingt-neuf', 'vingt neuf', '29'],
   30: ['trente', 'trent', '30'],
   31: ['trente-et-un', 'trente et un', '31'],
-  32: ['trente-deux', '32'],
-  33: ['trente-trois', '33'],
-  34: ['trente-quatre', '34'],
-  35: ['trente-cinq', '35'],
-  36: ['trente-six', '36'],
-  37: ['trente-sept', '37'],
-  38: ['trente-huit', '38'],
-  39: ['trente-neuf', '39'],
+  32: ['trente-deux', 'trente deux', '32'],
+  33: ['trente-trois', 'trente trois', '33'],
+  34: ['trente-quatre', 'trente quatre', '34'],
+  35: ['trente-cinq', 'trente cinq', '35'],
+  36: ['trente-six', 'trente six', '36'],
+  37: ['trente-sept', 'trente sept', '37'],
+  38: ['trente-huit', 'trente huit', '38'],
+  39: ['trente-neuf', 'trente neuf', '39'],
   40: ['quarante', 'quarant', '40'],
   41: ['quarante-et-un', 'quarante et un', '41'],
-  42: ['quarante-deux', '42'],
-  43: ['quarante-trois', '43'],
-  44: ['quarante-quatre', '44'],
-  45: ['quarante-cinq', '45'],
-  46: ['quarante-six', '46'],
-  47: ['quarante-sept', '47'],
-  48: ['quarante-huit', '48'],
-  49: ['quarante-neuf', '49'],
+  42: ['quarante-deux', 'quarante deux', '42'],
+  43: ['quarante-trois', 'quarante trois', '43'],
+  44: ['quarante-quatre', 'quarante quatre', '44'],
+  45: ['quarante-cinq', 'quarante cinq', '45'],
+  46: ['quarante-six', 'quarante six', '46'],
+  47: ['quarante-sept', 'quarante sept', '47'],
+  48: ['quarante-huit', 'quarante huit', '48'],
+  49: ['quarante-neuf', 'quarante neuf', '49'],
   50: ['cinquante', 'cinquant', '50'],
 };
 
@@ -294,6 +292,8 @@ const state = {
   maxNumber: 20,             // nouveau réglage
   isSpeaking: false,         // empêche le micro d'écouter le TTS
   ignoreInputUntil: 0,       // système de cooldown anti-faux-positifs
+  attemptsOnCurrent: 0,      // nombre d'essais vocaux sur le chiffre en cours
+  speechDetectedAt: 0,       // horodatage de détection de voix (onspeechstart)
   timerHandle: null,
   recognition: null,
   listening: false,
@@ -539,22 +539,29 @@ function pickFrVoice() {
  * Pendant la synthèse, on arrête la reconnaissance pour éviter
  * que le micro capte la voix de la machine comme réponse.
  */
+let speakSafetyTimer = null;
+
 function speakNumber(number) {
   if (!window.speechSynthesis) return;
 
   state.isSpeaking = true; // Signale qu'on parle
+  if (speakSafetyTimer) clearTimeout(speakSafetyTimer);
+  // Sécurité mobile : sur certains navigateurs Android/iOS, utter.onend ne se déclenche pas
+  speakSafetyTimer = setTimeout(() => { state.isSpeaking = false; }, 1800);
+
   speechSynthesis.cancel(); // annuler toute parole en cours
 
   const text = FR_SPEECH[number] ?? String(number);
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang  = 'fr-FR';
-  utter.rate  = 0.82;
+  utter.rate  = 0.85;
   utter.pitch = 1.1;
   utter.voice = pickFrVoice();
 
   const finished = () => {
-    // Délai plus long pour s'assurer que l'écho du haut-parleur est fini
-    setTimeout(() => { state.isSpeaking = false; }, 800);
+    if (speakSafetyTimer) clearTimeout(speakSafetyTimer);
+    // Délai court pour laisser passer la fin du son haut-parleur
+    setTimeout(() => { state.isSpeaking = false; }, 350);
   };
 
   utter.onend = finished;
@@ -569,43 +576,13 @@ if (window.speechSynthesis) {
 }
 
 // ──────────────────────────────────────────
-// VÉRIFIER LA RÉPONSE VOCALE
+// VÉRIFIER LA RÉPONSE VOCALE (fallback clic)
 // ──────────────────────────────────────────
 function checkAnswer(transcript) {
-  const expected  = state.currentIndex;
-  const wordList  = FR_WORDS[expected] || [];
-  const normFull  = normalize(transcript);
-
-  // 1. Transcription complète ≈ l'un des candidats
-  const fullMatch = fuzzyMatch(normFull, wordList);
-
-  // 2. Chaque mot individuel ≈ l'un des candidats
-  // On limite la recherche aux mots de plus de 1 lettre pour éviter les faux positifs (ex: "a")
-  const spokenTokens = normFull.split(/[\s-]+/).filter(t => t.length > 1);
-  const tokenMatch   = spokenTokens.some(tok => fuzzyMatch(tok, wordList));
-
-  const isCorrect = fullMatch || tokenMatch;
-  console.log(`[check] attendu="${FR_SPEECH[expected]}" transcrit="${normFull}" → ${isCorrect ? '✅' : '❌'}`);
-
-  if (isCorrect) {
-    AudioEngine.success(); // 🎉 Son de succès
-    showFeedback('correct');
-    state.playerPos++;
-    updateMonsterPositions();
-    checkWin();
-    if (!state.gameOver) {
-      state.currentIndex++;
-      if (state.currentIndex < NUMBERS.length) {
-        setTimeout(() => highlightNumber(state.currentIndex), 400);
-      }
-    }
+  if (checkCorrectness(transcript)) {
+    handleCorrectAnswer();
   } else {
-    AudioEngine.error(); // 😕 Son d'erreur
-    showFeedback('wrong');
-    // Après 700 ms (le feedback s'affiche), prononcer la bonne réponse
-    setTimeout(() => {
-      if (!state.gameOver) speakNumber(expected);
-    }, 700);
+    handleWrongAnswer(transcript);
   }
 }
 
@@ -750,51 +727,76 @@ function launchConfetti() {
 // WEB SPEECH API — RECONNAISSANCE VOCALE
 // ──────────────────────────────────────────
 let recognition = null;
-let micPermissionGranted = false;
+let micPermissionGranted = true;
+let speechFallbackTimer = null;
 
 /**
- * Demande la permission micro UNE SEULE FOIS via getUserMedia,
- * puis initialise la reconnaissance vocale en mode continu.
- * En mode continu, le navigateur ne redemande plus la permission.
+ * Initialise la reconnaissance vocale en mode continu.
+ * On n'ouvre PAS de getUserMedia permanent en parallèle pour éviter
+ * tout conflit matériel sur le micro des smartphones Android / iOS.
  */
-async function initSpeech() {
+function initSpeech() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
     console.warn('Web Speech API non supportée.');
     // Mode fallback : clic = bonne réponse
-    $$('btn-mic').addEventListener('click', () => {
-      if (!state.gameOver) checkAnswer(NUMBERS[state.currentIndex].toString());
-    });
-    const label = $$('btn-mic').querySelector('.mic-label');
-    if (label) label.textContent = 'Cliquer !';
+    const btnMic = $$('btn-mic');
+    if (btnMic) {
+      btnMic.addEventListener('click', () => {
+        if (!state.gameOver) checkAnswer(NUMBERS[state.currentIndex].toString());
+      });
+      const label = btnMic.querySelector('.mic-label');
+      if (label) label.textContent = 'Cliquer !';
+    }
     return;
   }
 
-  // — Demander la permission micro une seule fois au chargement —
-  try {
-    await navigator.mediaDevices.getUserMedia({ audio: true });
-    micPermissionGranted = true;
-  } catch (err) {
-    console.warn('Permission micro refusée :', err);
-    micPermissionGranted = false;
-    return;
-  }
-
-  // — Créer la reconnaissance en mode CONTINU —
-  // continuous = true : la session reste ouverte indéfiniment,
-  // pas de stop/start en boucle → plus de popup de permission.
   recognition = new SpeechRecognition();
   recognition.lang            = 'fr-FR';
   recognition.continuous      = true;   // Session continue
-  recognition.interimResults  = true;   // Renvoie les mots plus vite
+  recognition.interimResults  = true;   // Renvoie les mots dès la première syllabe
   recognition.maxAlternatives = 5;      // Plus d'alternatives = plus de chances de matcher
 
   recognition.onstart = () => {
     state.listening = true;
+    micPermissionGranted = true;
     $$('btn-mic').classList.add('listening');
     $$('listening-indicator').classList.remove('hidden');
   };
+
+  // Détection d'activité vocale native (sans conflit micro) :
+  // Utile quand un enfant dit un mot très court ("un") que Google STT peine à transcrire
+  const onVoiceDetected = () => {
+    if (state.gameOver || state.isSpeaking || state.ignoreInputUntil > Date.now()) return;
+    state.speechDetectedAt = Date.now();
+  };
+  recognition.onsoundstart  = onVoiceDetected;
+  recognition.onspeechstart = onVoiceDetected;
+
+  const onVoiceEnded = () => {
+    if (state.gameOver || state.isSpeaking || state.ignoreInputUntil > Date.now()) return;
+    if (!state.speechDetectedAt) return;
+    const expectedAtEnd = state.currentIndex;
+    if (speechFallbackTimer) clearTimeout(speechFallbackTimer);
+    // Si au bout de 650 ms après la fin de la parole aucun résultat n'a validé,
+    // et qu'on est sur le chiffre 1 (très court/nasal) ou après 1 essai sur un chiffre court (<= 10),
+    // le filet de sécurité pédagogique valide l'effort vocal de l'enfant.
+    speechFallbackTimer = setTimeout(() => {
+      if (state.gameOver || state.currentIndex !== expectedAtEnd) return;
+      if (state.speechDetectedAt > 0 && Date.now() - state.speechDetectedAt >= 500) {
+        state.speechDetectedAt = 0;
+        if (expectedAtEnd === 1 || (expectedAtEnd <= 10 && state.attemptsOnCurrent >= 1)) {
+          console.log(`[Speech] ✓ Filet vocal (syllabe courte détectée) pour le chiffre ${expectedAtEnd}`);
+          handleCorrectAnswer();
+        } else {
+          state.attemptsOnCurrent++;
+        }
+      }
+    }, 650);
+  };
+  recognition.onspeechend = onVoiceEnded;
+  recognition.onnomatch   = onVoiceEnded;
 
   // onend : sur mobile Chrome, la session se coupe souvent (timeout, bruit, etc.)
   // On relance automatiquement avec un délai court.
@@ -803,13 +805,12 @@ async function initSpeech() {
     $$('btn-mic').classList.remove('listening');
     $$('listening-indicator').classList.add('hidden');
     console.log('[Speech] Session terminée, relance...');
-    // Relancer systématiquement sauf si le jeu est fini ou permission refusée
     if (!state.gameOver && micPermissionGranted) {
       setTimeout(() => {
         if (!state.gameOver && micPermissionGranted && !state.listening) {
           startListening();
         }
-      }, 300);
+      }, 250);
     }
   };
 
@@ -820,22 +821,26 @@ async function initSpeech() {
       state.listening = false;
       $$('btn-mic').classList.remove('listening');
       $$('listening-indicator').classList.add('hidden');
-    } else if (e.error === 'no-speech' || e.error === 'audio-capture' || e.error === 'network') {
-      // Erreurs fréquentes sur mobile — on laisse onend relancer
+    } else if (e.error === 'no-speech') {
+      // Sur mobile, un "un" d'enfant déclenche parfois 'no-speech' malgré un début de son
+      onVoiceEnded();
+    } else if (e.error === 'audio-capture' || e.error === 'network') {
       console.log('[Speech] Erreur récupérable, onend va relancer.');
     } else if (e.error === 'aborted') {
-      // Peut arriver si on appelle stop() pendant que ça tourne
       console.log('[Speech] Session avortée.');
     }
   };
 
   // Chaque résultat reçu : vérifier la réponse
   recognition.onresult = (event) => {
-    // Si on vient juste de valider un chiffre de façon normale, on ignore
-    // Mais on n'ignore PAS si on est en mode apprentissage (pour capter même pendant que ça parle)
+    if (speechFallbackTimer) {
+      clearTimeout(speechFallbackTimer);
+      speechFallbackTimer = null;
+    }
+    state.speechDetectedAt = 0;
+
     if (!state.isLearning && (state.isSpeaking || state.ignoreInputUntil > Date.now())) return;
 
-    // On parcourt les nouveaux résultats (notamment les résultats partiels hyper-rapides)
     for (let i = event.resultIndex; i < event.results.length; ++i) {
       const result = event.results[i];
 
@@ -857,14 +862,13 @@ async function initSpeech() {
           
           handleCorrectAnswer();
         }
-        return; // Le mode apprentissage est un "one-shot", on sort
+        return;
       }
 
       // MODE JEU NORMAL
-      // On parcourt les alternatives. Si l'une d'elles match, on valide.
+      let matchedPrevNumber = false;
       for (let j = 0; j < result.length; j++) {
           const alt = result[j];
-          // Sur mobile, la confiance est souvent 0. On accepte tout.
           const transcript = alt.transcript.trim();
           if (transcript.length === 0) continue;
           
@@ -875,44 +879,81 @@ async function initSpeech() {
               handleCorrectAnswer();
               return; 
           }
+
+          if (state.currentIndex > 0 && matchesNumber(transcript, state.currentIndex - 1)) {
+              matchedPrevNumber = true;
+          }
       }
 
-      // Si le son est "final" (le navigateur a décidé que la phrase est finie) et qu'aucune alternative n'est bonne
-      // On déclenche l'erreur. Cela évite de punir un gamin au milieu d'un mot.
-      if (result.isFinal) {
-          if (result[0].confidence > 0.3 || result[0].confidence === 0) {
-              handleWrongAnswer(result[0].transcript);
+      // Si c'est juste la traîne du chiffre précédent dans le flux continu, on ignore sans punir
+      if (matchedPrevNumber) {
+          return;
+      }
+
+      // Tolérance spéciale voix d'enfant pour le chiffre "1" (son nasal court souvent mal transcrit) :
+      // tout son court d'un seul mot qui n'est pas "zéro" valide le "1"
+      if (state.currentIndex === 1 && result[0]) {
+          const rawNorm = normalize(result[0].transcript);
+          const tokens = rawNorm.split(/[\s-]+/).filter(Boolean);
+          const lastTok = tokens[tokens.length - 1] || '';
+          if (lastTok.length >= 1 && lastTok.length <= 5 && !matchesNumber(lastTok, 0)) {
+              console.log(`[Speech] ✓ Validé (tolérance vocale enfant sur "1") : "${rawNorm}"`);
+              handleCorrectAnswer();
+              return;
           }
+      }
+
+      // Quand le segment est final et qu'aucune alternative n'a matché directement :
+      if (result.isFinal && result[0]) {
+          const rawTranscript = result[0].transcript.trim();
+          if (!rawTranscript) continue;
+
+          // Filet de sécurité pédagogique : si l'enfant a déjà essayé ce chiffre au moins 1 fois
+          // et répète clairement quelque chose au micro, on valide son effort pour ne pas le bloquer
+          if (state.attemptsOnCurrent >= 1) {
+              console.log(`[Speech] ✓ Filet pédagogique (2e essai vocal de l'enfant) : "${rawTranscript}"`);
+              handleCorrectAnswer();
+              return;
+          }
+
+          handleWrongAnswer(rawTranscript);
       }
     }
   };
 }
 
-/** Fonction utilitaire pour vérifier si un texte correspond au chiffre attendu */
-function checkCorrectness(transcript) {
-    const expected = state.currentIndex;
-    let wordList = FR_WORDS[expected] || [];
-    
-    // Ajout des mots personnalisés de l'instituteur
-    if (customWords[expected]) {
-      wordList = wordList.concat(customWords[expected]);
+/** Vérifie si un texte transcrit correspond à un chiffre donné `num` */
+function matchesNumber(transcript, num) {
+    let wordList = FR_WORDS[num] || [];
+    if (customWords[num]) {
+      wordList = wordList.concat(customWords[num]);
     }
-    
+
     const normFull = normalize(transcript);
+    if (!normFull) return false;
 
     const fullMatch = fuzzyMatch(normFull, wordList);
-    const spokenTokens = normFull.split(/[\s-]+/).filter(t => t.length > 1);
+    // Important : garder les tokens de 1 caractère (ex: "1", "2", "a") !
+    const spokenTokens = normFull.split(/[\s-]+/).filter(t => t.length >= 1);
     const tokenMatch = spokenTokens.some(tok => fuzzyMatch(tok, wordList));
 
     return fullMatch || tokenMatch;
+}
+
+/** Fonction utilitaire pour vérifier si un texte correspond au chiffre attendu */
+function checkCorrectness(transcript) {
+    return matchesNumber(transcript, state.currentIndex);
 }
 
 /** Traitement d'une bonne réponse */
 function handleCorrectAnswer() {
     if (state.gameOver) return;
     
-    // Cooldown pour éviter les triggers multiples sur le même souffle
-    state.ignoreInputUntil = Date.now() + 1200;
+    // Cooldown court (450ms) aligné sur le changement visuel (400ms)
+    // pour que l'enfant puisse compter à son rythme naturel ("zéro, un, deux...")
+    state.ignoreInputUntil = Date.now() + 450;
+    state.attemptsOnCurrent = 0;
+    state.speechDetectedAt = 0;
 
     AudioEngine.success();
     showFeedback('correct');
@@ -923,7 +964,7 @@ function handleCorrectAnswer() {
     if (!state.gameOver) {
       state.currentIndex++;
       if (state.currentIndex < NUMBERS.length) {
-        setTimeout(() => highlightNumber(state.currentIndex), 400);
+        setTimeout(() => highlightNumber(state.currentIndex), 350);
       }
     }
 }
@@ -932,16 +973,17 @@ function handleCorrectAnswer() {
 function handleWrongAnswer(transcript) {
     if (state.gameOver || state.ignoreInputUntil > Date.now()) return;
 
-    console.log(`[Speech] Erreur détectée (transcrit: "${transcript}")`);
+    state.attemptsOnCurrent++;
+    console.log(`[Speech] Essai non reconnu #${state.attemptsOnCurrent} (transcrit: "${transcript}")`);
     AudioEngine.error();
     showFeedback('wrong');
 
-    // On ignore temporairement pour ne pas boucler sur l'erreur
-    state.ignoreInputUntil = Date.now() + 1500;
+    // Cooldown réduit pour ne pas rendre le micro sourd quand l'enfant répète vite
+    state.ignoreInputUntil = Date.now() + 650;
 
     setTimeout(() => {
       if (!state.gameOver) speakNumber(state.currentIndex);
-    }, 700);
+    }, 450);
 }
 
 function startListening() {
@@ -975,6 +1017,8 @@ function startGame() {
   state.currentIndex = 0;
   state.playerPos = 0;
   state.timerPos = 0;
+  state.attemptsOnCurrent = 0;
+  state.speechDetectedAt = 0;
   state.gameOver = false;
 
   // Construire la bande de chiffres
@@ -995,7 +1039,11 @@ function startGame() {
     requestAnimationFrame(() => highlightNumber(0));
   });
 
-  // Démarrer timer & micro
+  // Démarrer le micro IMMÉDIATEMENT dans le geste utilisateur (indispensable sur mobile)
+  micPermissionGranted = true;
+  startListening();
+
+  // Démarrer timer & vérifier que le micro tourne
   setTimeout(() => {
     startTimer();
     startListening();
