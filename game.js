@@ -754,7 +754,10 @@ function initSpeech() {
 
   recognition = new SpeechRecognition();
   recognition.lang            = 'fr-FR';
-  recognition.continuous      = true;   // Session continue
+  // continuous = false (mode mot-à-mot avec relance auto en 100ms) :
+  // Sur Chrome Android, cela force le moteur vocal à traiter chaque chiffre court
+  // isolément et déclenche de façon fiable onspeechstart + onnomatch sur les voix d'enfants.
+  recognition.continuous      = false;
   recognition.interimResults  = true;   // Renvoie les mots dès la première syllabe
   recognition.maxAlternatives = 5;      // Plus d'alternatives = plus de chances de matcher
 
@@ -765,8 +768,10 @@ function initSpeech() {
     $$('listening-indicator').classList.remove('hidden');
   };
 
-  // Détection d'activité vocale native (sans conflit micro) :
-  // Utile quand un enfant dit un mot très court ("un") que Google STT peine à transcrire
+  // Détection d'activité vocale native :
+  // Sur Android, quand un jeune enfant prononce un chiffre ("un", "deux"...),
+  // le micro détecte la voix (onspeechstart) mais le modèle adulte de Google
+  // renvoie très souvent `onnomatch` sans aucun texte dans `onresult`.
   const onVoiceDetected = () => {
     if (state.gameOver || state.isSpeaking || state.ignoreInputUntil > Date.now()) return;
     state.speechDetectedAt = Date.now();
@@ -774,43 +779,56 @@ function initSpeech() {
   recognition.onsoundstart  = onVoiceDetected;
   recognition.onspeechstart = onVoiceDetected;
 
-  const onVoiceEnded = () => {
+  const validateChildVoiceEffort = (reason) => {
+    if (state.gameOver || state.isSpeaking || state.ignoreInputUntil > Date.now()) return;
+    if (speechFallbackTimer) {
+      clearTimeout(speechFallbackTimer);
+      speechFallbackTimer = null;
+    }
+    state.speechDetectedAt = 0;
+    if (state.isLearning) {
+      state.isLearning = false;
+      $$('btn-mic').classList.remove('learning-mode');
+    }
+    console.log(`[Speech] ✓ Voix d'enfant validée (${reason}) pour le chiffre ${state.currentIndex}`);
+    handleCorrectAnswer();
+  };
+
+  // Si Google détecte clairement une parole mais renvoie `nomatch` (cas typique des voix d'enfants) :
+  // on valide immédiatement pour que l'enfant avance dès qu'il prononce son chiffre !
+  recognition.onnomatch = () => {
+    validateChildVoiceEffort('onnomatch après voix détectée');
+  };
+
+  recognition.onspeechend = () => {
     if (state.gameOver || state.isSpeaking || state.ignoreInputUntil > Date.now()) return;
     if (!state.speechDetectedAt) return;
     const expectedAtEnd = state.currentIndex;
     if (speechFallbackTimer) clearTimeout(speechFallbackTimer);
-    // Si au bout de 650 ms après la fin de la parole aucun résultat n'a validé,
-    // et qu'on est sur le chiffre 1 (très court/nasal) ou après 1 essai sur un chiffre court (<= 10),
-    // le filet de sécurité pédagogique valide l'effort vocal de l'enfant.
     speechFallbackTimer = setTimeout(() => {
       if (state.gameOver || state.currentIndex !== expectedAtEnd) return;
-      if (state.speechDetectedAt > 0 && Date.now() - state.speechDetectedAt >= 500) {
-        state.speechDetectedAt = 0;
-        if (expectedAtEnd === 1 || (expectedAtEnd <= 10 && state.attemptsOnCurrent >= 1)) {
-          console.log(`[Speech] ✓ Filet vocal (syllabe courte détectée) pour le chiffre ${expectedAtEnd}`);
-          handleCorrectAnswer();
-        } else {
-          state.attemptsOnCurrent++;
-        }
+      if (state.speechDetectedAt > 0) {
+        validateChildVoiceEffort('onspeechend sans transcription Google');
       }
-    }, 650);
+    }, 400);
   };
-  recognition.onspeechend = onVoiceEnded;
-  recognition.onnomatch   = onVoiceEnded;
 
-  // onend : sur mobile Chrome, la session se coupe souvent (timeout, bruit, etc.)
-  // On relance automatiquement avec un délai court.
+  // onend : relance automatique immédiate (100ms) pour écouter le chiffre suivant
   recognition.onend = () => {
     state.listening = false;
-    $$('btn-mic').classList.remove('listening');
-    $$('listening-indicator').classList.add('hidden');
-    console.log('[Speech] Session terminée, relance...');
+    // Si une voix avait été détectée juste avant que la session ne se ferme sans résultat :
+    if (state.speechDetectedAt > 0 && !state.gameOver && !state.isSpeaking && state.ignoreInputUntil <= Date.now()) {
+      validateChildVoiceEffort('fin de segment après voix détectée');
+    }
     if (!state.gameOver && micPermissionGranted) {
       setTimeout(() => {
         if (!state.gameOver && micPermissionGranted && !state.listening) {
           startListening();
         }
-      }, 250);
+      }, 100);
+    } else {
+      $$('btn-mic').classList.remove('listening');
+      $$('listening-indicator').classList.add('hidden');
     }
   };
 
@@ -822,8 +840,9 @@ function initSpeech() {
       $$('btn-mic').classList.remove('listening');
       $$('listening-indicator').classList.add('hidden');
     } else if (e.error === 'no-speech') {
-      // Sur mobile, un "un" d'enfant déclenche parfois 'no-speech' malgré un début de son
-      onVoiceEnded();
+      if (state.speechDetectedAt > 0) {
+        validateChildVoiceEffort('no-speech après détection vocale');
+      }
     } else if (e.error === 'audio-capture' || e.error === 'network') {
       console.log('[Speech] Erreur récupérable, onend va relancer.');
     } else if (e.error === 'aborted') {
