@@ -13,7 +13,7 @@
       font-family: 'Baloo 2', system-ui, sans-serif;
       background: linear-gradient(180deg, #87CEEB 0%, #B8F0A0 100%);
       min-height: 100vh;
-      padding: 16px;
+      padding: 14px;
       color: #1F2937;
       display: flex;
       flex-direction: column;
@@ -22,23 +22,23 @@
     .card {
       width: 100%;
       max-width: 520px;
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 24px;
-      padding: 20px;
+      padding: 18px;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 800;
       text-align: center;
       color: #FF3E6C;
       line-height: 1.15;
     }
     .subtitle {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       text-align: center;
       color: #4B5563;
       line-height: 1.35;
@@ -66,12 +66,12 @@
       background: linear-gradient(135deg, #FF3E6C, #FF8C42);
       color: #fff;
       border-radius: 20px;
-      padding: 18px;
+      padding: 14px;
       text-align: center;
       box-shadow: 0 6px 0 #C62A47;
     }
-    .target-label { font-size: 1rem; opacity: 0.92; }
-    .target-number { font-size: 4.5rem; font-weight: 800; line-height: 1; }
+    .target-label { font-size: 0.95rem; opacity: 0.92; }
+    .target-number { font-size: 4.2rem; font-weight: 800; line-height: 1; }
 
     .status-bar {
       display: flex;
@@ -79,13 +79,14 @@
       justify-content: center;
       gap: 8px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       padding: 8px 12px;
       border-radius: 12px;
       background: #F3F4F6;
       color: #374151;
     }
     .status-bar.listening { background: #D1FAE5; color: #065F46; }
+    .status-bar.speaking { background: #FEF3C7; color: #92400E; }
     .status-bar.error { background: #FEE2E2; color: #991B1B; }
     .dot {
       width: 10px; height: 10px;
@@ -96,43 +97,48 @@
       background: #10B981;
       animation: pulse 1s infinite;
     }
+    .status-bar.speaking .dot {
+      background: #F59E0B;
+      animation: pulse 0.4s infinite;
+    }
     @keyframes pulse {
       0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0.5; }
+      50% { transform: scale(1.45); opacity: 0.5; }
     }
 
     .heard-box {
       background: #F9FAFB;
       border: 2px dashed #D1D5DB;
       border-radius: 16px;
-      padding: 12px;
-      min-height: 88px;
-      max-height: 160px;
+      padding: 10px;
+      min-height: 110px;
+      max-height: 180px;
       overflow-y: auto;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
-    .heard-empty { color: #9CA3AF; text-align: center; padding-top: 16px; }
+    .heard-empty { color: #9CA3AF; text-align: center; padding-top: 24px; }
     .heard-item {
-      padding: 4px 8px;
-      margin-bottom: 4px;
+      padding: 5px 8px;
+      margin-bottom: 5px;
       border-radius: 8px;
       background: #fff;
       border: 1px solid #E5E7EB;
       word-break: break-word;
     }
     .heard-item.final { border-color: #60A5FA; background: #EFF6FF; }
+    .heard-item.event { border-color: #FCD34D; background: #FFFBEB; color: #92400E; font-size: 0.82rem; }
 
     .btn-row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
     button {
       font-family: inherit;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 800;
       border: none;
       border-radius: 999px;
-      padding: 12px 18px;
+      padding: 11px 16px;
       cursor: pointer;
       touch-action: manipulation;
       transition: transform 0.1s;
@@ -187,7 +193,7 @@
   <div class="card">
     <h1>🎤 Calibrage Voix (0 à 10)</h1>
     <p class="subtitle">
-      Fais compter ta fille devant le micro, chiffre par chiffre, puis appuie sur <strong>Suivant</strong> après chaque chiffre (même si ce n'est pas reconnu).
+      Fais compter ta fille chiffre par chiffre. La page affiche même les sons très courts détectés par le micro.
     </p>
 
     <div id="progress-row" class="progress-row"></div>
@@ -213,7 +219,8 @@
 
       <div class="btn-row">
         <button id="btn-prev" class="btn-secondary">← Préc.</button>
-        <button id="btn-next" class="btn-next">Chiffre suivant →</button>
+        <button id="btn-relance" class="btn-secondary">🔄 Micro</button>
+        <button id="btn-next" class="btn-next">Suivant →</button>
       </div>
     </div>
 
@@ -234,7 +241,7 @@
     let currentNum = 0;
     let recognition = null;
     let isRunning = false;
-    const captures = {}; // { "0": [ { isFinal, alts: [{t, c}] } ] }
+    const captures = {};
 
     for (let i = 0; i <= MAX_NUM; i++) captures[i] = [];
 
@@ -259,7 +266,7 @@
     function updateUI() {
       $('target-number').textContent = currentNum;
       $('btn-prev').disabled = currentNum === 0;
-      $('btn-next').textContent = currentNum === MAX_NUM ? 'Terminer ✓' : 'Chiffre suivant →';
+      $('btn-next').textContent = currentNum === MAX_NUM ? 'Terminer ✓' : 'Suivant →';
       renderPills();
       renderHeard();
     }
@@ -268,12 +275,15 @@
       const box = $('heard-box');
       const list = captures[currentNum];
       if (!list || list.length === 0) {
-        box.innerHTML = '<div class="heard-empty">Parle… ce que le micro entend s\'affiche ici.</div>';
+        box.innerHTML = '<div class="heard-empty">Parle… tout son ou mot capté s\'affiche ici.</div>';
         return;
       }
       box.innerHTML = list.map(entry => {
-        const altsText = entry.alts.map(a => `"${a.t}" (${a.c})`).join(' | ');
-        return `<div class="heard-item ${entry.isFinal ? 'final' : ''}"><strong>${entry.isFinal ? 'FINAL' : 'en cours'}:</strong> ${altsText}</div>`;
+        if (entry.event) {
+          return `<div class="heard-item event">⚡ ${entry.event}</div>`;
+        }
+        const altsText = entry.alts.map(a => `"${a.t}"`).join(' | ');
+        return `<div class="heard-item ${entry.isFinal ? 'final' : ''}"><strong>${entry.isFinal ? 'FINAL' : 'partiel'}:</strong> ${altsText}</div>`;
       }).join('');
       box.scrollTop = box.scrollHeight;
     }
@@ -284,6 +294,11 @@
       $('status-text').textContent = text;
     }
 
+    function logEvent(msg) {
+      captures[currentNum].push({ event: msg, t: Date.now() });
+      renderHeard();
+    }
+
     function initSpeech() {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SR) {
@@ -292,20 +307,30 @@
       }
       recognition = new SR();
       recognition.lang = 'fr-FR';
-      recognition.continuous = true;
+      // Mode mot-à-mot (continuous = false) avec relance immédiate :
+      // force le décodeur mobile à traiter les mots courts d'enfants sans attendre une phrase
+      recognition.continuous = false;
       recognition.interimResults = true;
       recognition.maxAlternatives = 5;
 
-      recognition.onstart = () => setStatus('listening', 'Micro actif — écoute en cours…');
+      recognition.onstart = () => setStatus('listening', 'Micro prêt — parle maintenant !');
+
+      recognition.onspeechstart = () => {
+        setStatus('speaking', '🎙️ Voix détectée…');
+        logEvent('Voix détectée par le micro');
+      };
+
+      recognition.onnomatch = () => {
+        logEvent('Son détecté mais non compris par Google (nomatch)');
+      };
 
       recognition.onend = () => {
         if (isRunning) {
-          setStatus('', 'Reconnexion micro…');
           setTimeout(() => {
             if (isRunning) {
               try { recognition.start(); } catch (e) {}
             }
-          }, 250);
+          }, 120);
         }
       };
 
@@ -313,8 +338,10 @@
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
           isRunning = false;
           setStatus('error', 'Permission micro refusée.');
+        } else if (e.error === 'no-speech') {
+          setStatus('listening', 'En écoute…');
         } else {
-          setStatus('', `Pause micro (${e.error}), relance…`);
+          logEvent(`Info micro : ${e.error}`);
         }
       };
 
@@ -343,10 +370,9 @@
         captures: {}
       };
       for (let i = 0; i <= MAX_NUM; i++) {
-        summary.captures[i] = captures[i].map(e => ({
-          f: e.isFinal ? 1 : 0,
-          a: e.alts.map(x => `${x.t}[${x.c}]`)
-        }));
+        summary.captures[i] = captures[i].map(e =>
+          e.event ? { ev: e.event } : { f: e.isFinal ? 1 : 0, a: e.alts.map(x => `${x.t}[${x.c}]`) }
+        );
       }
       return JSON.stringify(summary, null, 2);
     }
@@ -358,6 +384,13 @@
       $('capture-zone').classList.remove('hidden');
       updateUI();
       try { recognition.start(); } catch (e) {}
+    };
+
+    $('btn-relance').onclick = () => {
+      try { recognition.stop(); } catch (e) {}
+      setTimeout(() => {
+        try { recognition.start(); } catch (e) {}
+      }, 150);
     };
 
     $('btn-prev').onclick = () => {
